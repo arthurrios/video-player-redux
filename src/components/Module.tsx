@@ -2,8 +2,7 @@ import * as Collapsible from '@radix-ui/react-collapsible';
 
 import { ChevronDown } from "lucide-react";
 import { Lesson } from "./Lesson";
-import { useAppDispatch, useAppSelector } from '../store';
-import { play } from '../store/slices/player';
+import { useStore } from '../zuztand-store';
 
 interface ModuleProps {
   moduleIndex: number
@@ -12,22 +11,19 @@ interface ModuleProps {
 }
 
 export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
-  const dispatch = useAppDispatch()
-  const isCourseLoading = useAppSelector(state => state.player.isLoading)
-
-  const { currentModuleIndex, currentLessonIndex } = useAppSelector(state => {
-    const { currentModuleIndex, currentLessonIndex } = state.player
-
-    return { currentModuleIndex, currentLessonIndex }
-  })
-
-  const lessons = useAppSelector(state => {
-    return state.player.course?.modules[moduleIndex].lessons
+  const { lessons, currentLessonIndex, currentModuleIndex, isLoading, play } = useStore(store => {
+    return {
+      lessons: store.course?.modules[moduleIndex].lessons,
+      currentLessonIndex: store.currentLessonIndex,
+      currentModuleIndex: store.currentModuleIndex,
+      isLoading: store.isLoading,
+      play: store.play,
+    }
   })
 
   return (
     <Collapsible.Root className='group' defaultOpen={moduleIndex === 0}>
-      { isCourseLoading ? (
+      { isLoading ? (
         <>
           <Collapsible.Trigger className='flex w-full items-center gap-3 bg-zinc-800 p-4'>
             <div className='animate-pulse flex h-10 w-10 rounded-full items-center justify-center bg-zinc-700 text-xs'></div>
@@ -92,7 +88,7 @@ export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
                   key={lesson.id}
                   title={lesson.title}
                   duration={lesson.duration}
-                  onPlay={() => dispatch(play([moduleIndex, lessonIndex]))}
+                  onPlay={() => play([moduleIndex, lessonIndex])}
                   isCurrent={isCurrent}  
                 />
               )
