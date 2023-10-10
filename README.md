@@ -8,7 +8,7 @@ This is a simple video player application developed at Rocketseat Academy utiliz
 3. Tailwind CSS
 4. Radix.ui
 5. Axios
-6. Server.json
+6. Json-server
 
 ### Steps
 1. Clone this repository;
